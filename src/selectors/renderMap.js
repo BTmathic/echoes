@@ -14,11 +14,11 @@ export default (x, y, map, handleMovement, handleSelect) => {
         key={key}
         onClick={(e) => {
           const tilePosition = e.target.id.split(',');
-          handleSelect(tilePosition);
+          handleSelect(tilePosition.map((string) => eval(string)));
         }}
         onContextMenu={(e) => {
           const tilePosition = e.target.id.split(',');
-          handleMovement(tilePosition);
+          handleMovement(tilePosition.map((string) => eval(string)));
         }}></div>;
         
       visibleMap.push(renderTile);

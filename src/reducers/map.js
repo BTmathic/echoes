@@ -14,20 +14,20 @@ export default (state = mapReducerDefaultState, action) => {
                 const toTile = state.map[action.newPosition[0]][action.newPosition[1]];
                 const newMap = state.map.map((row, index) => {
                   let newRow;
-                  if (index === eval(action.newPosition[0])) {
+                  if (index === action.newPosition[0]) {
                     newRow = row.map((tile, tileIndex) => {
-                      if (tileIndex === eval(action.newPosition[1])) {
+                      if (tileIndex === action.newPosition[1]) {
                         return fromTile;
-                      } else if (index === eval(oldPosition[0]) && tileIndex === eval(oldPosition[1])) {
+                      } else if (index === oldPosition[0] && tileIndex === oldPosition[1]) {
                         return toTile;
                       } else {
                         return tile;
                       }
                     });
                   }
-                  else if (index === eval(oldPosition[0])) {
+                  else if (index === oldPosition[0]) {
                     newRow = row.map((tile, tileIndex) => {
-                      if (tileIndex === eval(oldPosition[1])) {
+                      if (tileIndex === oldPosition[1]) {
                         return toTile;
                       } else {
                         return tile;
@@ -40,6 +40,7 @@ export default (state = mapReducerDefaultState, action) => {
                 });
                 return {
                   ...state,
+                  selected: action.newPosition,
                   map: newMap
                 }
             } else {
