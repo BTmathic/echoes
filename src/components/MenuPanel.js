@@ -1,10 +1,11 @@
 import React from 'react';
+import Minimap from './Minimap';
 
 export default class MenuPanel extends React.Component {
     render() {
         return (
             <div>
-                <p>Mini map with fog</p>
+                <Minimap />
                 <p>Selected player menu</p>
             </div>
         );

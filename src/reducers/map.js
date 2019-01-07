@@ -24,8 +24,7 @@ export default (state = mapReducerDefaultState, action) => {
                         return tile;
                       }
                     });
-                  }
-                  else if (index === oldPosition[0]) {
+                  } else if (index === oldPosition[0]) {
                     newRow = row.map((tile, tileIndex) => {
                       if (tileIndex === oldPosition[1]) {
                         return toTile;

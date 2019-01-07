@@ -12,7 +12,6 @@ export class Game extends React.Component {
     selected: ''
   };
 
-
   handleAction = (e) => {
     e.preventDefault();
     const keyName = e.key;
@@ -54,32 +53,50 @@ export class Game extends React.Component {
     // the standard (x,y)-coordinate system, so instead of y = mx + b we
     // are using y = -mx - b
     const currentPosition = this.state.selected;
-    const xMove = newPosition[1] - currentPosition[1];
-    const yMove = newPosition[0] - currentPosition[0];
-    const slope = yMove/xMove;
-    const yIntercept = currentPosition[0] - slope*currentPosition[1];
-    const xIntercept = -(currentPosition[0]/slope - currentPosition[1]);
-    let walkPath = [currentPosition];
+    if (this.props.map[currentPosition[0]][currentPosition[1]] === 'grunt') {
+      const xMove = newPosition[1] - currentPosition[1];
+      const yMove = newPosition[0] - currentPosition[0];
+      const slope = yMove / xMove;
+      const yIntercept = currentPosition[0] - slope * currentPosition[1];
+      const xIntercept = -(currentPosition[0] / slope - currentPosition[1]);
+      let walkPath = [currentPosition];
 
-    if (Math.abs(xMove) >= Math.abs(yMove)) {
-      for (let i = 0; i < Math.abs(xMove); i++) {
-        const xDirection = xMove === Math.abs(xMove) ? 1 : -1;
-        const nextX = walkPath[i][1] + xDirection;
-        walkPath.push([Math.round(slope * nextX + yIntercept), nextX]);
+      if (Math.abs(xMove) >= Math.abs(yMove)) {
+        for (let i = 0; i < Math.abs(xMove); i++) {
+          const xDirection = xMove === Math.abs(xMove) ? 1 : -1;
+          const nextX = walkPath[i][1] + xDirection;
+          walkPath.push([Math.round(slope * nextX + yIntercept), nextX]);
+        }
+      } else {
+        for (let i = 0; i < Math.abs(yMove); i++) {
+          const yDirection = yMove === Math.abs(yMove) ? 1 : -1;
+          const nextY = walkPath[i][0] + yDirection;
+          walkPath.push([nextY, Math.round(nextY / slope + xIntercept)]);
+        }
       }
-    } else {
-      for (let i = 0; i < Math.abs(yMove); i++) {
-        const yDirection = yMove === Math.abs(yMove) ? 1 : -1;
-        const nextY = walkPath[i][0] + yDirection;
-        walkPath.push([nextY, Math.round(nextY/slope + xIntercept)]);
+
+      let mustStop = false;
+      for (let i = 1; i < walkPath.length; i++) {
+        setTimeout(() => {
+          if (this.props.map[walkPath[i][0]][walkPath[i][1]] === 'empty' && !mustStop) {
+            this.props.move(walkPath[i]);
+          } else {
+            if (i === walkPath.length - 1 && !mustStop) {
+              switch (this.props.map[newPosition[0]][newPosition[1]]) {
+                case 'tree':
+                  console.log('Chop!');
+                  break;
+                case 'gold':
+                  console.log('Mine!');
+                  break;
+              }
+            }
+            mustStop = true;
+          }
+        }, 500 * i);
       }
     }
 
-    for (let i = 0; i < walkPath.length; i++) {
-      setTimeout(() => {
-        this.props.move(walkPath[i]);
-      }, 500*i);
-    };
   }
 
   handleSelectUnit = (position) => {
